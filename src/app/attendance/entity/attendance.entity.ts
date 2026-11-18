@@ -12,6 +12,9 @@ export class Attendance {
   @Column({ name: 'date', type: 'date' })
   date: string;
 
+  @Column({ name: 'status', type: 'varchar' })
+  status: string;
+
   @Column({ name: 'clock_in', type: 'timestamptz' })
   clockIn: Date;
 

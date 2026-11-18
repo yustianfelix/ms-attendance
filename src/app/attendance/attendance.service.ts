@@ -40,6 +40,7 @@ export class AttendanceService {
           date,
           clockIn: new Date(),
           clockOut: null,
+          status: action
         }),
       );
     }
