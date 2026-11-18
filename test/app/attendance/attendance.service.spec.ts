@@ -87,6 +87,7 @@ describe('AttendanceService', () => {
 
   it('sets the clock-out time on the existing attendance record', async () => {
     const attendance = {
+      uuid: 'attendance-id',
       employeeId: '42',
       date: '2026-11-18',
       clockIn: new Date('2026-11-18T08:30:00.000Z'),
@@ -104,5 +105,38 @@ describe('AttendanceService', () => {
     ).resolves.toBe(attendance);
     expect(attendance.clockOut).toBeInstanceOf(Date);
     expect(repository.save).toHaveBeenCalledWith(attendance);
+  });
+
+  it('rejects clock-out when no clock-in exists', async () => {
+    repository.findOneBy.mockResolvedValue(null);
+
+    await expect(
+      service.recordAction({
+        employee_id: '42',
+        date: '2026-11-18',
+        action: AttendanceAction.ClockOut,
+      }),
+    ).rejects.toThrow('No clock-in record exists for this employee and date');
+    expect(repository.save).not.toHaveBeenCalled();
+  });
+
+  it('rejects clock-out if the employee has already clocked out', async () => {
+    const attendance = {
+      uuid: 'attendance-id',
+      employeeId: '42',
+      date: '2026-11-18',
+      clockIn: new Date('2026-11-18T08:30:00.000Z'),
+      clockOut: new Date('2026-11-18T17:00:00.000Z'),
+    } as Attendance;
+    repository.findOneBy.mockResolvedValue(attendance);
+
+    await expect(
+      service.recordAction({
+        employee_id: '42',
+        date: '2026-11-18',
+        action: AttendanceAction.ClockOut,
+      }),
+    ).rejects.toThrow('Employee has already clocked out for this date');
+    expect(repository.save).not.toHaveBeenCalled();
   });
 });

@@ -8,4 +8,8 @@ export const appConfig = registerAs('app', () => ({
     password: process.env.DB_PASSWORD,
     name: process.env.DB_NAME ?? 'postgres',
   },
+
+  appEnv:{
+    applicationPort: process.env.PORT || 3000
+  }
 }));
