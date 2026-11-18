@@ -2,8 +2,8 @@ import { join } from 'node:path';
 import type { ConfigService } from '@nestjs/config';
 import type { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-export const createDatabaseOptions = (
-  config: ConfigService,
+export const databaseOptions = (
+    config: ConfigService,
 ): TypeOrmModuleOptions => ({
   type: 'postgres',
   host: config.getOrThrow<string>('app.database.host'),
@@ -13,8 +13,8 @@ export const createDatabaseOptions = (
   database: config.getOrThrow<string>('app.database.name'),
   ssl: { rejectUnauthorized: false },
   entities: [join(__dirname, '**/*.entity{.ts,.js}')],
-  migrations: [join(__dirname, '_migration/*{.ts,.js}')],
+  migrations: [join(__dirname, '_migration/[0-9]*-*.js')],
   migrationsTableName: '_migrations',
-  migrationsRun: false,
+  migrationsRun: true,
   synchronize: false,
 });

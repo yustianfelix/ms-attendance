@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { join } from 'node:path';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { appConfig } from './config';
-import { createDatabaseOptions } from './database.options';
+import {Module} from '@nestjs/common';
+import {ConfigModule, ConfigService} from '@nestjs/config';
+import {join} from 'node:path';
+import {TypeOrmModule} from '@nestjs/typeorm';
+import {AppController} from './app.controller';
+import {AppService} from './app.service';
+import {appConfig} from './config';
+import {databaseOptions} from './database.options';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { createDatabaseOptions } from './database.options';
       load: [appConfig],
     }),
     TypeOrmModule.forRootAsync({
-      useFactory: createDatabaseOptions,
+      useFactory: databaseOptions,
       inject: [ConfigService],
     }),
   ],

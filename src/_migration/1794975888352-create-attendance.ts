@@ -5,7 +5,7 @@ export class CreateAttendanceTable1794975888352 implements MigrationInterface {
     await queryRunner.query(`
       CREATE TABLE "attendance" (
         "uuid" uuid NOT NULL DEFAULT gen_random_uuid(),
-        "employee_id" uuid NOT NULL,
+        "employee_id" bigint NOT NULL,
         "clock_in" timestamptz NOT NULL,
         "clock_out" timestamptz,
         CONSTRAINT "PK_attendance_uuid" PRIMARY KEY ("uuid")
