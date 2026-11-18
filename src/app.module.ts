@@ -4,8 +4,9 @@ import {join} from 'node:path';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {AppController} from './app.controller';
 import {AppService} from './app.service';
-import {appConfig} from './config';
-import {databaseOptions} from './database.options';
+import { AttendanceModule } from './app/attendance/attendance.module';
+import { appConfig } from './config';
+import { databaseOptions } from './database.options';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import {databaseOptions} from './database.options';
       useFactory: databaseOptions,
       inject: [ConfigService],
     }),
+    AttendanceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

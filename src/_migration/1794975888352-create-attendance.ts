@@ -6,6 +6,7 @@ export class CreateAttendanceTable1794975888352 implements MigrationInterface {
       CREATE TABLE "attendance" (
         "uuid" uuid NOT NULL DEFAULT gen_random_uuid(),
         "employee_id" bigint NOT NULL,
+        "date" date NOT NULL,
         "clock_in" timestamptz NOT NULL,
         "clock_out" timestamptz,
         CONSTRAINT "PK_attendance_uuid" PRIMARY KEY ("uuid")
