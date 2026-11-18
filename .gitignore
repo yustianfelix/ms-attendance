@@ -1,7 +1,8 @@
-/.idea
+.idea/
 .project
 .classpath
-pacckage-lock.json
+package-lock.json
+*.tsbuildinfo
 
 # Nestjs specific
 /dist
