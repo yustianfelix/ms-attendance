@@ -5,8 +5,8 @@ import {TypeOrmModule} from '@nestjs/typeorm';
 import {AppController} from './app.controller';
 import {AppService} from './app.service';
 import { AttendanceModule } from './app/attendance/attendance.module';
-import { appConfig } from './config';
-import { databaseOptions } from './database.options';
+import { appConfig } from './config/config';
+import { databaseOptions } from './config/database.options';
 
 @Module({
   imports: [
