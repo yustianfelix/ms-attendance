@@ -10,13 +10,14 @@ import { Attendance } from '../../../src/app/attendance/entity/attendance.entity
 describe('AttendanceController', () => {
   let controller: AttendanceController;
   let attendanceService: jest.Mocked<
-    Pick<AttendanceService, 'recordAction' | 'getSummary'>
+    Pick<AttendanceService, 'recordAction' | 'getSummary' | 'getList'>
   >;
 
   beforeEach(async () => {
     attendanceService = {
       recordAction: jest.fn(),
       getSummary: jest.fn(),
+      getList: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -71,6 +72,31 @@ describe('AttendanceController', () => {
       code: '00',
       message: 'Success',
       data: summary,
+    });
+  });
+
+  it('returns a paginated attendance list', async () => {
+    const list = {
+      attendances: [],
+      pagination: {
+        page: 1,
+        pageSize: 10,
+        total: 0,
+        totalPages: 0,
+      },
+    };
+    attendanceService.getList.mockResolvedValue(list);
+
+    await expect(
+      controller.getList({ employee_id: '42', date: '2026-11-18' }),
+    ).resolves.toEqual({
+      code: '00',
+      message: 'Success',
+      data: list,
+    });
+    expect(attendanceService.getList).toHaveBeenCalledWith({
+      employee_id: '42',
+      date: '2026-11-18',
     });
   });
 });

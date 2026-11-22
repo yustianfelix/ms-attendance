@@ -12,7 +12,10 @@ import { AttendanceSummaryRequestBodyDto } from '../../../src/app/attendance/dto
 describe('AttendanceService', () => {
   let service: AttendanceService;
   let repository: jest.Mocked<
-    Pick<Repository<Attendance>, 'create' | 'save' | 'findOneBy' | 'find'>
+    Pick<
+      Repository<Attendance>,
+      'create' | 'save' | 'findOneBy' | 'find' | 'findAndCount'
+    >
   >;
 
   beforeEach(async () => {
@@ -21,6 +24,7 @@ describe('AttendanceService', () => {
       save: jest.fn(),
       findOneBy: jest.fn(),
       find: jest.fn(),
+      findAndCount: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -200,5 +204,48 @@ describe('AttendanceService', () => {
       'start_date must be on or before end_date',
     );
     expect(repository.find).not.toHaveBeenCalled();
+  });
+
+  it('lists attendance with filters and default pagination', async () => {
+    const records = [{ employeeId: '42', date: '2026-11-18' }] as Attendance[];
+    repository.findAndCount.mockResolvedValue([records, 1]);
+
+    await expect(
+      service.getList({ employee_id: '42', date: '2026-11-18' }),
+    ).resolves.toEqual({
+      attendances: records,
+      pagination: {
+        page: 1,
+        pageSize: 10,
+        total: 1,
+        totalPages: 1,
+      },
+    });
+    expect(repository.findAndCount).toHaveBeenCalledWith({
+      where: { employeeId: '42', date: '2026-11-18' },
+      order: { date: 'DESC', clockIn: 'DESC' },
+      skip: 0,
+      take: 10,
+    });
+  });
+
+  it('applies custom pagination', async () => {
+    repository.findAndCount.mockResolvedValue([[], 25]);
+
+    await expect(service.getList({ page: 3, pageSize: 10 })).resolves.toEqual({
+      attendances: [],
+      pagination: {
+        page: 3,
+        pageSize: 10,
+        total: 25,
+        totalPages: 3,
+      },
+    });
+    expect(repository.findAndCount).toHaveBeenCalledWith(
+      expect.objectContaining({
+        skip: 20,
+        take: 10,
+      }),
+    );
   });
 });
